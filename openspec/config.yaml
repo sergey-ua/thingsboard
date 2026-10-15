@@ -1,0 +1,73 @@
+schema: spec-driven
+
+context: |
+  ThingsBoard 4.4.1-SNAPSHOT — IoT platform for data collection, processing, visualization
+  and device management. Multi-module Maven reactor plus an Angular web UI.
+
+  Tech stack (checked in pom.xml, ui-ngx/package.json, CONTRIBUTING.md):
+  - Java 25 (maven.compiler.source/target 25), Maven 3.9.x, Spring Boot 3.5.15, Lombok.
+  - Angular 20.3.28, TypeScript ~5.9.3, RxJS ~7.8.2; Node and Yarn are provisioned by
+    frontend-maven-plugin, so they need no separate install.
+  - Docker is required for the Testcontainers-based dao and application tests.
+
+  Module layout (from CONTRIBUTING.md "Repository layout"):
+  - common — shared server code: data models, messaging, utilities.
+  - dao — persistence layer: SQL DAOs and entity services.
+  - rule-engine — rule engine core and the built-in rule nodes.
+  - transport — device transports: MQTT, HTTP, CoAP, LwM2M, SNMP.
+  - integration — third-party platform integrations and the integration executor.
+  - edqs — Entity Data Query Service.
+  - application — the main server application, assembling the modules above.
+  - ui-ngx — the Angular web UI.
+  - msa — microservices packaging: per-service Docker images and the black-box test suite.
+  - rest-client — Java REST client for the platform API.
+  - netty-mqtt — standalone Netty-based MQTT client library.
+  - tools, packaging, monitoring, migrator, report — dev/CI tooling, deb/rpm/zip packaging,
+    and the standalone monitoring, migration and report services.
+
+  Build and test:
+  - Whole reactor: `mvn clean install -DskipTests -Dpkg.skip=true` (-Dpkg.skip skips the
+    boot jar and the deb/rpm/zip artifacts; not safe if you need the msa images or black-box suite).
+  - One module: `mvn -pl <module> -am -DskipTests -Dpkg.skip=true test-compile`, then
+    `mvn test -pl <module>` scoped with -Dtest=... to the package you touched.
+  - UI, from ui-ngx: `yarn install`, `yarn start`, `yarn build:prod`, `yarn lint`.
+
+  Conventions:
+  - Every source file carries the project's SPDX license header; run `mvn license:format`
+    before committing. Do not add personal copyright or author lines. CI enforces this
+    (.github/workflows/check-license-headers.yml, license-header-format.yml).
+  - Licensing is Apache-2.0 AND BUSL-1.1; check-license-headers.sh stamps headers by CE provenance.
+  - History is merge-commit based with "Merge pull request #NNNN from ..." subjects; PRs target
+    master, use the pull_request_template.md, and need test coverage and a signed CLA.
+  - New or changed behaviour needs tests.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
